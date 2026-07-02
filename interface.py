@@ -1,46 +1,73 @@
-import tkinter as tk
-from tkinter import ttk
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
+import pygame
 
-# Initialize the main window
-root = tk.Tk()
-root.title("Python MP3 Player")
-root.geometry("400x500")
-root.configure(bg="#2c3e50")  # Dark modern background
+def playmusic(folder, songname):
+    filepath = os.path.join(folder, songname)
+    if not os.path.exists(filepath):
+        print("file not found")
+        return
+    pygame.mixer.music.load(filepath)
+    pygame.mixer.music.play()
+    print(f"\nNow playing: {songname}")
+    print("commands: P for pause, R for resume, S for stop")
+    while True:
+        command = input("> ").upper()
+        if command == 'P':
+            pygame.mixer.music.pause()
+            print("paused")
+        elif command == 'R':
+            pygame.mixer.music.unpause()
+            print("resumed")
+        elif command == 'S':
+            pygame.mixer.music.stop()
+            print("stopped")
+            return
+        else:
+            print("invalid command")
 
-# --- 1. Track Info Section ---
-info_frame = tk.Frame(root, bg="#2c3e50")
-info_frame.pack(pady=20)
+def main():
+    try:
+        pygame.mixer.init()
+    except pygame.error as e:
+        print("audio initialization failed")
+        print(e)
+        return
 
-song_label = tk.Label(info_frame, text="No Song Playing", font=("Helvetica", 14, "bold"), fg="#ecf0f1", bg="#2c3e50")
-song_label.pack()
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    folder = os.path.join(BASE_DIR, "Mp3 player")
+    if not os.path.isdir(folder):
+        print(f"{folder} not found")
+        return
 
-progress_bar = ttk.Scale(info_frame, from_=0, to=100, orient="horizontal", length=300)
-progress_bar.pack(pady=10)
+    mp3_files = [file for file in os.listdir(folder) if file.endswith("mp3")]
 
-# --- 2. Playlist Section ---
-list_frame = tk.Frame(root, bg="#2c3e50")
-list_frame.pack(pady=10, fill="both", expand=True, padx=20)
+    if not mp3_files:
+        print("no MP3 files found")
+        return
 
-playlist = tk.Listbox(list_frame, bg="#34495e", fg="#ecf0f1", selectbackground="#1abc9c", bd=0, font=("Helvetica", 11))
-playlist.pack(fill="both", expand=True)
+    while True:
+        print("* MP3 player *")
+        print("my song list")
+        for index, song in enumerate(mp3_files, start=1):
+            print(f"{index}. {song}")
 
-# --- 3. Control Buttons Section ---
-control_frame = tk.Frame(root, bg="#2c3e50")
-control_frame.pack(pady=20)
+        choice_input = input("\nEnter the song number to play, or Q to quit: ")
 
-# Simple placeholder functions for buttons
-def play_song(): print("Play pressed")
-def pause_song(): print("Pause pressed")
+        if choice_input.upper() == 'Q':
+            print("bye")
+            break
 
-btn_prev = tk.Button(control_frame, text="⏮️", font=("Helvetica", 14), width=4, bg="#34495e", fg="#ecf0f1", bd=0)
-btn_play = tk.Button(control_frame, text="▶️", font=("Helvetica", 14), width=4, bg="#1abc9c", fg="#ecf0f1", bd=0, command=play_song)
-btn_pause = tk.Button(control_frame, text="⏸️", font=("Helvetica", 14), width=4, bg="#34495e", fg="#ecf0f1", bd=0, command=pause_song)
-btn_next = tk.Button(control_frame, text="⏭️", font=("Helvetica", 14), width=4, bg="#34495e", fg="#ecf0f1", bd=0)
+        if not choice_input.isdigit():
+            print("enter a valid number")
+            continue
 
-btn_prev.grid(row=0, column=0, padx=5)
-btn_play.grid(row=0, column=1, padx=5)
-btn_pause.grid(row=0, column=2, padx=5)
-btn_next.grid(row=0, column=3, padx=5)
+        choice = int(choice_input) - 1
 
-# Start the application loop
-root.mainloop()
+        if 0 <= choice < len(mp3_files):
+            playmusic(folder, mp3_files[choice])
+        else:
+            print("invalid choice")
+
+if __name__ == '__main__':
+    main()
