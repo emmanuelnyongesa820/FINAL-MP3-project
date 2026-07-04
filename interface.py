@@ -52,14 +52,14 @@ def main():
         for index, song in enumerate(mp3_files, start=1):
             print(f"{index}. {song}")
 
-        choice_input = input("\nEnter the song number to play, or Q to quit: ")
+        choice_input = input("\nEnter num and ply, or L to leave: ")
 
-        if choice_input.upper() == 'Q':
+        if choice_input.upper() == 'L':
             print("bye")
             break
 
         if not choice_input.isdigit():
-            print("enter a valid number")
+            print("enter a valid num")
             continue
 
         choice = int(choice_input) - 1
