@@ -1,24 +1,27 @@
 # MP3 Player Project
 
-A simple MP3 player project built with Python and `pygame`. This repository includes:
+A simple MP3 player built with Python, `pygame`, and `tkinter`.
 
-- `interface.py` – command-line MP3 player
-- `graphicalInterface.py` – Tkinter GUI music player
-- `Mp3 player/` – default folder for storing local MP3 files
+This repository includes:
+
+- `interface.py` — command-line MP3 player
+- `graphicalInterface.py` — Tkinter GUI music player
+- `Mp3 player/` — optional folder for storing MP3 files
 - control button assets: `play.png`, `pause.png`, `next.png`, `previous.png`
 
 ## Features
 
-- Play MP3 files from a local folder
-- Pause, resume, and stop playback in the command-line player
-- Select a folder and play songs with control buttons in the GUI player
-- Automatic `.mp3` detection (case-insensitive)
+- Play MP3 files from a folder or from the entire project directory
+- Case-insensitive MP3 detection
+- CLI player with pause, resume, and stop commands
+- GUI player with play, pause, stop, next, and previous controls
+- Basic WSLg PulseAudio support when running under WSL
 
 ## Requirements
 
-- Python 3.8+
-- `pygame` installed
-- `tkinter` available for the GUI version
+- Python 3.8 or newer
+- `pygame`
+- `tkinter` for the GUI version
 
 ## Installation
 
@@ -28,54 +31,84 @@ A simple MP3 player project built with Python and `pygame`. This repository incl
 pip install pygame
 ```
 
-2. If you want to run the GUI app, make sure `tkinter` is installed. On Debian/Ubuntu:
+2. Install `tkinter` if you want to run the GUI:
+
+On Debian/Ubuntu:
 
 ```bash
 sudo apt-get install python3-tk
+```
+
+If you are using WSL and want audio through Windows, install PulseAudio support in WSL:
+
+```bash
+sudo apt-get install libpulse0 pulseaudio-utils
 ```
 
 ## Usage
 
 ### Command-line player
 
-1. Place your MP3 files in the `Mp3 player` folder.
+1. Open a terminal in the project folder.
 2. Run:
 
 ```bash
 python3 interface.py
 ```
 
-3. Enter the song number to play.
-4. Use commands while the song is playing:
-   - `P` = pause
-   - `R` = resume
-   - `S` = stop and return to menu
+3. Enter the number of the song you want to play.
+4. While a song is playing, use:
+   - `P` to pause
+   - `R` to resume
+   - `S` to stop and return to the menu
 
 ### GUI player
 
-1. Run:
+1. Open a terminal in the project folder.
+2. Run:
 
 ```bash
 python3 graphicalInterface.py
 ```
 
-2. Select a folder that contains MP3 files.
-3. Use the play, pause, next, and previous buttons.
+3. Use `Select Folder` to choose a folder with MP3 files.
+4. Use the controls at the bottom to:
+   - Play the selected song
+   - Pause playback
+   - Stop playback
+   - Play the next song
+   - Play the previous song
 
-If your system has no audio device, you can still open the window for testing with:
+5. You can also use keyboard shortcuts in the GUI:
+   - `Space` = play / resume
+   - `P` = pause
+   - `S` = stop
+   - `Left` = previous song
+   - `Right` = next song
+
+## WSL / Windows audio notes
+
+If you run this project under WSL, the programs try to use the WSLg PulseAudio socket at `/mnt/wslg/PulseServer` automatically.
+
+If sound does not play, try launching the GUI with explicit audio environment variables:
+
+```bash
+cd /home/robby/FINAL-MP3-project
+env PULSE_SERVER=unix:/mnt/wslg/PulseServer SDL_AUDIODRIVER=pulse python3 graphicalInterface.py
+```
+
+If audio still does not work, the app can still start with a dummy audio driver, but no sound will play:
 
 ```bash
 SDL_AUDIODRIVER=dummy python3 graphicalInterface.py
 ```
 
-The GUI and CLI list only files that appear to be valid MP3s. Some files labeled `.mp3` may be unsupported if they contain streaming or invalid data.
-
 ## Notes
 
-- The command-line player blocks until the current song is stopped.
-- The GUI player allows folder selection and list-based playback.
-- The `Mp3 player` folder is used by default for the CLI player, but the GUI player can open any folder.
-- If your machine has no sound card, both players can still start using a dummy audio driver, but no audio will play.
+- The CLI player scans the project folder for MP3 files and plays the chosen song.
+- The GUI player scans the selected folder or the entire project for valid MP3s.
+- The app validates MP3 files by checking file extension and basic MP3 header bytes.
+- If a file is not a valid MP3, it will be skipped.
 
 ## License
 
