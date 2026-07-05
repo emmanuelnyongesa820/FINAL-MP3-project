@@ -112,5 +112,5 @@ SDL_AUDIODRIVER=dummy python3 graphicalInterface.py
 
 ## License
 
-This project is provided as-is for learning and demonstration purposes.
+This project is provided as-is for learning and demonstration purposes from Haniel, Emmanuel, James and Robinson.
 
