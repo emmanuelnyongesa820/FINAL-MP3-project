@@ -1,0 +1,115 @@
+# MP3 Player Project
+
+A simple MP3 player built with Python, `pygame`, and `tkinter`.
+It was supposed to include the custom Tkinter but the resources were unavailabled.
+This repository includes:
+
+- `interface.py` — command-line MP3 player
+- `graphicalInterface.py` — Tkinter GUI music player
+- `Mp3 player/` — optional folder for storing MP3 files
+- control button assets: `play.png`, `pause.png`, `next.png`, `previous.png`
+
+## Features
+
+- Play MP3 files from a folder or from the entire project directory
+- Case-insensitive MP3 detection
+- CLI player with pause, resume, and stop commands
+- GUI player with play, pause, stop, next, and previous controls
+- Basic WSLg PulseAudio support when running under WSL
+
+## Requirements
+
+- Python 3.8 or newer
+- `pygame`
+- `tkinter` for the GUI version
+
+## Installation
+
+1. Install `pygame`:
+
+```bash
+pip install pygame
+```
+
+2. Install `tkinter` if you want to run the GUI:
+
+On Debian/Ubuntu:
+
+```bash
+sudo apt-get install python3-tk
+```
+
+If you are using WSL and want audio through Windows, install PulseAudio support in WSL:
+
+```bash
+sudo apt-get install libpulse0 pulseaudio-utils
+```
+
+## Usage
+
+### Command-line player
+
+1. Open a terminal in the project folder.
+2. Run:
+
+```bash
+python3 interface.py
+```
+
+3. Enter the number of the song you want to play.
+4. While a song is playing, use:
+   - `P` to pause
+   - `R` to resume
+   - `S` to stop and return to the menu
+
+### GUI player
+
+1. Open a terminal in the project folder.
+2. Run:
+
+```bash
+python3 graphicalInterface.py
+```
+
+3. Use `Select Folder` to choose a folder with MP3 files.
+4. Use the controls at the bottom to:
+   - Play the selected song
+   - Pause playback
+   - Stop playback
+   - Play the next song
+   - Play the previous song
+
+5. You can also use keyboard shortcuts in the GUI:
+   - `Space` = play / resume
+   - `P` = pause
+   - `S` = stop
+   - `Left` = previous song
+   - `Right` = next song
+
+## WSL / Windows audio notes
+
+If you run this project under WSL, the programs try to use the WSLg PulseAudio socket at `/mnt/wslg/PulseServer` automatically.
+
+If sound does not play, try launching the GUI with explicit audio environment variables:
+
+```bash
+cd /home/robby/FINAL-MP3-project
+env PULSE_SERVER=unix:/mnt/wslg/PulseServer SDL_AUDIODRIVER=pulse python3 graphicalInterface.py
+```
+
+If audio still does not work, the app can still start with a dummy audio driver, but no sound will play:
+
+```bash
+SDL_AUDIODRIVER=dummy python3 graphicalInterface.py
+```
+
+## Notes
+
+- The CLI player scans the project folder for MP3 files and plays the chosen song.
+- The GUI player scans the selected folder or the entire project for valid MP3s.
+- The app validates MP3 files by checking file extension and basic MP3 header bytes.
+- If a file is not a valid MP3, it will be skipped.
+
+## License
+
+This project is provided as-is for learning and demonstration
